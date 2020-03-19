@@ -1,8 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Rotator : MonoBehaviour
+public class Pickup : PooledObject
 {
+    public override void OnObjectDespawn()
+    {
+    }
+
+    public override void OnObjectSpawn()
+    {
+    }
 
     void Update()
     {

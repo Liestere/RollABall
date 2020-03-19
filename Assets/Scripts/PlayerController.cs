@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Pickup"))
         {
-            other.gameObject.SetActive(false);
+            ObjectPool.Instance.DespawnObject("pickup",other.gameObject.GetComponent<PooledObject>());
             count = count + 1;
             SetCountText();
         }
@@ -41,9 +41,9 @@ public class PlayerController : MonoBehaviour
     void SetCountText()
     {
         countText.text = "Count: " + count.ToString();
-        if (count >= 2)
+        /*if (count >= 2)
         {
             winText.text = "You Win!";
-        }
+        }*/
     }
 }
