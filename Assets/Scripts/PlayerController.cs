@@ -24,10 +24,21 @@ public class PlayerController : MonoBehaviour
         float moveVertical = Input.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-
         rb.AddForce(movement * speed);
-    }
 
+    }
+    private void Update()
+    {
+        GameObject cow = transform.Find("Cow").gameObject;
+        if (rb.GetPointVelocity(Vector3.zero) == Vector3.zero)
+        {
+            cow.GetComponent<Animator>().SetBool("isMoving", false);
+        }
+        else
+        {
+            cow.GetComponent<Animator>().SetBool("isMoving", true);
+        }
+    }
     void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Pickup"))
