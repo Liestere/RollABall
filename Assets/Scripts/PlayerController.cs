@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -12,15 +11,19 @@ public class PlayerController : MonoBehaviour
     public Text countText;
     public Text announcementText;
     public Text highScoreText;
+    public AudioSource hayRollingSound;
+    public AudioSource cowEatingSound;
 
     private Rigidbody rb;
     private int count;
     private int highScore;
     private GameObject cow;
     private FixedJoint cowJoint;
+    private AudioSource cowSound;
 
     private string filePath;
     private bool gamePaused;
+
     void Awake()
     {
         gamePaused = false;
@@ -28,8 +31,10 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         cowJoint = GetComponent<FixedJoint>();
         cow = transform.Find("Cow").gameObject;
+        cowSound = cow.GetComponent<AudioSource>();
         File.Open(filePath, FileMode.OpenOrCreate).Dispose();
         string count = File.ReadAllText(filePath);
+        
 
         if (string.IsNullOrEmpty(count))
         {
@@ -49,8 +54,14 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-
+        StartCoroutine(PlayCowSound(1));
         highScoreText.text = "Highscore: " + highScore.ToString();
+    }
+    private IEnumerator PlayCowSound(float time)
+    {
+        yield return new WaitForSeconds(time);
+        cowSound.Play();
+        StartCoroutine(PlayCowSound(UnityEngine.Random.Range(cowSound.clip.length+3, 15f)));
     }
     void Start()
     {
@@ -95,15 +106,21 @@ public class PlayerController : MonoBehaviour
         }
         if (rb.GetPointVelocity(Vector3.zero) == Vector3.zero)
         {
+            hayRollingSound.Stop();
             cow.GetComponent<Animator>().SetBool("isMoving", false);
         }
         else
         {
+            if (!hayRollingSound.isPlaying)
+            {
+                hayRollingSound.Play();
+            }
             cow.GetComponent<Animator>().SetBool("isMoving", true);
         }
 
         if (cowJoint == null)
         {
+            cowSound.Play();
             gamePaused = true;
             if (highScore < count)
             {
@@ -123,6 +140,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Pickup"))
         {
+            cowEatingSound.Play();
             ObjectPool.Instance.DespawnObject("pickup", other.gameObject.GetComponent<PooledObject>());
             count = count + 1;
             SetCountText();
