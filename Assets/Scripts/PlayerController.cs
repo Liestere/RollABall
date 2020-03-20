@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
     private string filePath;
     private bool gamePaused;
 
+    #region Startup
     void Awake()
     {
         gamePaused = false;
@@ -34,7 +35,7 @@ public class PlayerController : MonoBehaviour
         cowSound = cow.GetComponent<AudioSource>();
         File.Open(filePath, FileMode.OpenOrCreate).Dispose();
         string count = File.ReadAllText(filePath);
-        
+
 
         if (string.IsNullOrEmpty(count))
         {
@@ -57,18 +58,16 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(PlayCowSound(1));
         highScoreText.text = "Highscore: " + highScore.ToString();
     }
-    private IEnumerator PlayCowSound(float time)
-    {
-        yield return new WaitForSeconds(time);
-        cowSound.Play();
-        StartCoroutine(PlayCowSound(UnityEngine.Random.Range(cowSound.clip.length+3, 15f)));
-    }
+
     void Start()
     {
         count = 0;
         SetCountText();
         announcementText.text = "";
     }
+    #endregion
+
+    #region App Save
     private void Save()
     {
         File.Open(filePath, FileMode.OpenOrCreate).Dispose();
@@ -88,15 +87,28 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Application Quit");
         Save();
     }
+    #endregion
 
+    private IEnumerator PlayCowSound(float time)
+    {
+        yield return new WaitForSeconds(time);
+        cowSound.Play();
+        StartCoroutine(PlayCowSound(UnityEngine.Random.Range(cowSound.clip.length + 3, 15f)));
+    }
     void FixedUpdate()
     {
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
-
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-        rb.AddForce(movement * speed);
-
+        if (SystemInfo.supportsAccelerometer)
+        {
+            Vector3 acc = Input.acceleration;
+            rb.AddForce(acc.x * speed*2, 0, acc.y * speed*2);
+        }
+        else
+        {
+            float moveH = Input.GetAxis("Horizontal");
+            float moveV = Input.GetAxis("Vertical");
+            Vector3 movement = new Vector3(moveH, 0.0f, moveV);
+            rb.AddForce(movement * speed);
+        }
     }
     private void Update()
     {
@@ -138,7 +150,7 @@ public class PlayerController : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Pickup"))
+        if (other.gameObject.CompareTag("Pickup") && !gamePaused)
         {
             cowEatingSound.Play();
             ObjectPool.Instance.DespawnObject("pickup", other.gameObject.GetComponent<PooledObject>());

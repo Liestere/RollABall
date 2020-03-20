@@ -5,6 +5,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
         InvokeRepeating("Game", 1, 1);
     }
     private void Game()
