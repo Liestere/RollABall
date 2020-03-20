@@ -23,10 +23,12 @@ public class PlayerController : MonoBehaviour
 
     private string filePath;
     private bool gamePaused;
+    private AdManager unityAds;
 
     #region Startup
     void Awake()
     {
+        unityAds = GameObject.Find("AdManager").GetComponent<AdManager>();
         gamePaused = false;
         filePath = Application.persistentDataPath + "/save.txt";
         rb = GetComponent<Rigidbody>();
@@ -166,8 +168,11 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator RestartGame()
     {
-
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(2);
+        if (unityAds.ShowAd("replayGame"))
+        {
+            yield return new WaitForSeconds(5);
+        }
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

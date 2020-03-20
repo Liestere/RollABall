@@ -1,0 +1,26 @@
+https://learn.unity.com/project/roll-a-ball-tutorial
+
+Farm Animals Pack and LowPoly Models created by Quaternius
+https://www.patreon.com/quaternius
+
+Fences
+https://assetstore.unity.com/packages/3d/props/exterior/free-stylized-garden-asset-145896
+
+Grass
+https://assetstore.unity.com/packages/2d/textures-materials/grass-flowers-pack-free-138810
+
+Hayball
+https://assetstore.unity.com/packages/2d/textures-materials/free-stylized-pbr-textures-pack-111778
+
+Sounds:
+Eating:
+By rubberduck https://opengameart.org/content/80-cc0-creature-sfx
+
+Hay:
+By original VDrift sounds
+
+Cow:
+By Secretlondon http://commons.wikimedia.org/wiki/User:Secretlondon
+
+Background:
+By Koertes ccby
